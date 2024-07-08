@@ -6,7 +6,7 @@ This is a Visual Studio Code extension that provides language support (specifica
 
 At the moment, syntax highlighting is the only supported feature.
 
-\!\[Syntax Highlighting\]\(images/highlighting.png\)
+![Syntax Highlighting](images/highlighting.png)
 
 ## Requirements
 None, just install it and go!
