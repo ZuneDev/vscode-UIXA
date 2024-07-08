@@ -2,6 +2,7 @@
   "name": "uixa",
   "displayName": "UIX Assembly",
   "description": "Provides language support for UIX Assembly",
+  "publisher": "YoshiAsk",
   "repository": {
     "url": "https://github.com/ZuneDev/vscode-UIXA",
     "type": "github"
