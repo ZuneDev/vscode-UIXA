@@ -1,0 +1,293 @@
+#################################################################
+## Iro
+################################################################ 
+##
+## * Press Ctrl + '+'/'-' To Zoom in
+## * Press Ctrl + S to save and recalculate... 
+## * Documents are saved to web storage.
+## * Only one save slot supported.
+## * Matches cannot span lines.
+## * Unicode chars must be defined in \u0000 to \uffff format.
+## * All matches must be contained by a single group ( ... )
+## * Look behinds not permitted, (?<= or (?<!
+## * Look forwards are permitted (?= or (?!
+## * Constants are defined as __my_const = (......)
+## * The \= format allows unescaped regular expressions
+## * Constants referenced by match \= $${__my_const}
+## * Constants can reference other constants
+## * You are free to delete all the default scopes.
+## * Twitter : ainslec , Web: http://eeyo.io/iro
+##
+################################################################
+
+name                   = uixa
+file_extensions []     = uixa;
+
+################################################################
+## Constants
+################################################################
+
+//__MY_CONSTANT \= (\b[a-z][a-z0-9]*)
+__ID         \= [\w\d_]+
+__QUALTYPEID \= ($${__ID}:)?($${__ID})
+
+################################################################
+## Styles
+################################################################
+
+styles [] {
+
+.keyword : style {
+   color                 = #569CD6
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.numeric : style {
+   color                 = #B5CEA8
+   textmate_scope        = constant.numeric.uixa
+   pygments_scope        = Number
+}
+
+.punctuation : style {
+   color                 = white
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.text : style {
+   color                 = #D69D85
+   textmate_scope        = string
+}
+
+.userId : style {
+   color                 = #9CDCFE
+   textmate_scope        = entity.name.variable.parameter.uixa
+}
+
+.typeId : style {
+   color                 = #4EC9B0
+   textmate_scope        = entity.name.type.uixa
+}
+
+.operator : style {
+   color                 = #B4B4B4
+   textmate_scope        = keyword.operator
+}
+
+.method : style {
+   color                 = #DCDCAA
+   textmate_scope        = entity.name.function.uixa
+}
+
+.illegal : style {
+   color                 = white
+   background_color      = red
+   textmate_scope        = invalid
+   pygments_scope        = Generic.Error
+}
+
+}
+
+#################################################
+## Parse contexts
+#################################################
+
+contexts [] {
+
+##############################################
+## Main Context - Entry point context
+##############################################
+
+main : context {
+   : inline_push {
+      regex          \= (.export)
+      styles []       = .keyword;
+      : eol_pop {}
+      : pattern {
+         regex       \= ($${__ID}\s+)(\d+\s+)$${__QUALTYPEID}
+         styles []    = .text, .numeric, .userId, .typeId;
+      }
+   }
+
+   : inline_push {
+      regex          \= (.section)
+      styles []       = .keyword;
+      : eol_pop {}
+      : pattern {
+         regex       \= (\w+)
+         styles []    = .userId;
+      }
+   }
+   
+   : inline_push {
+      regex          \= (.import-ns)
+      styles []       = .keyword;
+      : eol_pop {}
+      : include "uri";
+      : pattern {
+         regex    \= (as)
+         styles [] = .keyword;
+      }
+      : pattern {
+         regex    \= ([\w_]+)
+         styles [] = .userId;
+      }
+   }
+   
+   : inline_push {
+      regex          \= (.import-type)
+      styles []       = .keyword;
+      : eol_pop {}
+      : include "type";
+   }
+   
+   : inline_push {
+      regex          \= (.import-ctor)
+      styles []       = .keyword;
+      : eol_pop {}
+      : include "method";
+   }
+   
+   : inline_push {
+      regex          \= (.import-mthd)
+      styles []       = .keyword;
+      : eol_pop {}
+      : include "method";
+   }
+   
+   : inline_push {
+      regex          \= (.import-mbrs)
+      styles []       = .keyword;
+      : eol_pop {}
+      : include "type";
+      : inline_push {
+         regex          \= (\{)
+         styles []       = .punctuation;
+         : pop {
+            regex       \= (\})
+            styles []    = .punctuation;
+         }
+         : pattern {
+            regex       \= (,)
+            styles []    = .punctuation;
+         }
+      }
+   }
+   
+   : inline_push {
+      regex          \= (.constant)
+      styles []       = .keyword;
+      : eol_pop {}
+      : pattern {
+         regex          \= ($${__ID})(\s*)(=)
+         styles []       = .userId, .punctuation, .operator;
+      }
+      
+      : include "type";
+      
+      : pattern {
+         regex          \= (\.)([\w_]+)
+         styles []       = .operator, .method;
+      }
+   
+      : inline_push {
+         regex          \= (\()
+         styles []       = .punctuation;
+         default_style   = .text
+         : pop {
+            regex       \= (\))
+            styles []    = .punctuation;
+         }
+      }
+   }
+   
+   : pattern {
+      regex             \= ($${__ID})(:)
+      styles []          = .userId, .punctuation;
+   }
+   
+   : include "numeric";
+   
+   : pattern {
+      regex             \= (\w+)
+      styles []          = .method;
+   }
+   
+   : pattern {
+      regex             \= (,)
+      styles []          = .punctuation;
+   }
+   
+   : pattern {
+      regex             \= (@$${__ID})
+      styles []          = .userId;
+   }
+   
+   : pattern {
+      regex          \= ([^\s])
+      styles []       = .illegal;
+   }
+   
+}
+
+#################################################
+## End of Contexts
+#################################################
+
+###########################################
+## Numeric Context
+###########################################
+
+numeric : context {
+   : pattern {
+      regex          \= (\b\d+)
+      styles []       = .numeric;
+   }
+}
+
+uri : context {
+   : pattern {
+      regex          \= ([\w-]+://[\w/.!]+)
+      styles []       = .text;
+   }
+}
+
+type : context {
+   : pattern {
+      regex          \= $${__QUALTYPEID}
+      styles []       = .userId, .typeId;
+   }
+}
+
+userId : context {
+   : pattern {
+      regex          \= ($${__ID})
+      styles []       = .userId;
+   }
+}
+
+method : context {
+   : include "type";
+   
+   : pattern {
+      regex          \= (\.)([\w_]+)
+      styles []       = .operator, .method;
+   }
+
+   : inline_push {
+      regex          \= (\()
+      styles []       = .punctuation;
+      : pop {
+         regex       \= (\))
+         styles []    = .punctuation;
+      }
+      : include "type" ;
+      : pattern {
+         regex       \= (,)
+         styles []    = .punctuation;
+      }
+   }
+}
+   
+}
