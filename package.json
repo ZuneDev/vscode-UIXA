@@ -1,0 +1,29 @@
+{
+  "name": "uixa",
+  "displayName": "UIX Assembly",
+  "description": "Provides language support for UIX Assembly",
+  "repository": {
+    "url": "https://github.com/ZuneDev/vscode-UIXA",
+    "type": "github"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "uixa",
+      "aliases": ["UIX Assembly", "uixa"],
+      "extensions": [".uixa"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "uixa",
+      "scopeName": "source.uixa",
+      "path": "./syntaxes/UIXA.tmLanguage"
+    }]
+  }
+}
