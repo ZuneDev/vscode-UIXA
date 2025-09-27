@@ -1,13 +1,13 @@
 {
   "name": "uixa",
-  "displayName": "UIX Assembly",
-  "description": "Provides language support for UIX Assembly",
+  "displayName": "Iris UI",
+  "description": "Provides language support for UIX Assembly and Scripts",
   "publisher": "YoshiAsk",
   "repository": {
     "url": "https://github.com/ZuneDev/vscode-UIXA",
     "type": "github"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -15,16 +15,31 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "uixa",
-      "aliases": ["UIX Assembly", "uixa"],
-      "extensions": [".uixa"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "uixa",
-      "scopeName": "source.uixa",
-      "path": "./syntaxes/UIXA.tmLanguage"
-    }]
+    "languages": [
+      {
+        "id": "uixa",
+        "aliases": ["UIX Assembly", "uixa"],
+        "extensions": [".uixa"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "uix-script",
+        "aliases": ["UIX Script", "uix-script"],
+        "extensions": [".uix-script"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "uixa",
+        "scopeName": "source.uixa",
+        "path": "./syntaxes/UIXA.tmLanguage"
+      },
+      {
+        "language": "uix-script",
+        "scopeName": "source.uix-script",
+        "path": "./syntaxes/uix-script.tmLanguage.json"
+      }
+    ]
   }
 }
