@@ -20,18 +20,18 @@
         "id": "uixa",
         "aliases": ["UIX Assembly", "uixa"],
         "extensions": [".uixa"],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/uix_language-configuration.json"
       },
       {
         "id": "uix-script",
         "aliases": ["UIX Script", "uix-script"],
         "extensions": [".uix-script"],
-        "configuration": "./uix-script_language-configuration.json"
+        "configuration": "./languages/uix-script_language-configuration.json"
       },
       {
         "id": "uix-xml",
         "aliases": ["UIX XML", "uix-xml"],
-        "extensions": [".uix"]
+        "extensions": [".uix", ".uix-xml"]
       }
     ],
     "grammars": [
