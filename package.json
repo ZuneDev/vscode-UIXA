@@ -27,6 +27,11 @@
         "aliases": ["UIX Script", "uix-script"],
         "extensions": [".uix-script"],
         "configuration": "./uix-script_language-configuration.json"
+      },
+      {
+        "id": "uix-xml",
+        "aliases": ["UIX XML", "uix-xml"],
+        "extensions": [".uix"]
       }
     ],
     "grammars": [
@@ -39,6 +44,11 @@
         "language": "uix-script",
         "scopeName": "source.uix-script",
         "path": "./syntaxes/uix-script.tmLanguage.json"
+      },
+      {
+        "language": "uix-xml",
+        "scopeName": "source.uix-xml",
+        "path": "./syntaxes/uix-xml.tmLanguage.json"
       }
     ]
   }
