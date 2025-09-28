@@ -1,6 +1,10 @@
 # uixa
 
-This is a Visual Studio Code extension that provides language support (specifically, syntax highlighting) for [UIX Assembly](https://github.com/ZuneDev/ZuneUIXTools/tree/master/libs/UIX.Asm).
+This is a Visual Studio Code extension that provides language support (specifically, syntax highlighting) for various [Microsoft Iris](https://zunedev.github.io/Wiki/Zune%20software/Iris/) formats:
+
+- UIX XML (with inline expressions, scripts, and methods)
+- UIX Script
+- [UIX Assembly](https://zunedev.github.io/Wiki/Zune%20software/Iris/uix-assembly)
 
 ## Features
 

@@ -1,7 +1,7 @@
 {
   "name": "uixa",
-  "displayName": "Iris UI",
-  "description": "Provides language support for UIX Assembly and Scripts",
+  "displayName": "Iris UIX",
+  "description": "Provides language support for various UIX formats including XML, scripts, and Assembly",
   "publisher": "YoshiAsk",
   "repository": {
     "url": "https://github.com/ZuneDev/vscode-UIXA",
