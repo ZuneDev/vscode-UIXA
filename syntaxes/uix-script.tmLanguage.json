@@ -8,13 +8,7 @@
 	"scopeName": "source.uix-script",
 	"patterns": [
 		{
-			"include": "#preprocessor"
-		},
-		{
 			"include": "#comment"
-		},
-		{
-			"include": "#directives"
 		},
 		{
 			"include": "#declarations"
@@ -509,10 +503,7 @@
 		"attribute": {
 			"patterns": [
 				{
-					"include": "#type-name"
-				},
-				{
-					"include": "#type-arguments"
+					"include": "#statement-attribute-name"
 				},
 				{
 					"include": "#attribute-arguments"
@@ -534,33 +525,21 @@
 			},
 			"patterns": [
 				{
-					"include": "#attribute-named-argument"
-				},
-				{
-					"include": "#expression"
+					"include": "#member-access-expression"
 				},
 				{
 					"include": "#punctuation-comma"
 				}
 			]
 		},
-		"attribute-named-argument": {
-			"begin": "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(?==)",
-			"beginCaptures": {
-				"1": {
-					"name": "entity.name.variable.property.cs"
-				}
-			},
-			"end": "(?=(,|\\)))",
-			"patterns": [
-				{
-					"include": "#operator-assignment"
-				},
-				{
-					"include": "#expression"
-				}
-			]
-		},
+        "statement-attribute-name": {
+            "match": "(DeclareTrigger|InitialEvaluate|FinalEvaluate)",
+            "captures": {
+                "1": {
+                    "name": "entity.name.type.cs"
+                }
+            }
+        },
 		"namespace-declaration": {
 			"begin": "\\b(namespace)\\s+",
 			"beginCaptures": {
@@ -3168,114 +3147,6 @@
 				}
 			]
 		},
-		"local-tuple-var-deconstruction": {
-			"begin": "(?x) # e.g. var (x, y) = GetPoint();\n(?:\\b(var)\\b\\s*)\n(?<tuple>\\((?:[^\\(\\)]|\\g<tuple>)+\\))\\s*\n(?=;|=|\\))",
-			"beginCaptures": {
-				"1": {
-					"name": "storage.type.var.cs"
-				},
-				"2": {
-					"patterns": [
-						{
-							"include": "#tuple-declaration-deconstruction-element-list"
-						}
-					]
-				}
-			},
-			"end": "(?=;|\\))",
-			"patterns": [
-				{
-					"include": "#comment"
-				},
-				{
-					"include": "#variable-initializer"
-				}
-			]
-		},
-		"tuple-deconstruction-assignment": {
-			"match": "(?x)\n(?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\\s*\n(?!=>|==)(?==)",
-			"captures": {
-				"1": {
-					"patterns": [
-						{
-							"include": "#tuple-deconstruction-element-list"
-						}
-					]
-				}
-			}
-		},
-		"tuple-declaration-deconstruction-element-list": {
-			"begin": "\\(",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.open.cs"
-				}
-			},
-			"end": "\\)",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.close.cs"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#comment"
-				},
-				{
-					"include": "#tuple-declaration-deconstruction-element-list"
-				},
-				{
-					"include": "#declaration-expression-tuple"
-				},
-				{
-					"include": "#punctuation-comma"
-				},
-				{
-					"match": "(?x) # e.g. x\n(@?[_[:alpha:]][_[:alnum:]]*)\\b\\s*\n(?=[,)])",
-					"captures": {
-						"1": {
-							"name": "entity.name.variable.tuple-element.cs"
-						}
-					}
-				}
-			]
-		},
-		"tuple-deconstruction-element-list": {
-			"begin": "\\(",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.open.cs"
-				}
-			},
-			"end": "\\)",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.close.cs"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#comment"
-				},
-				{
-					"include": "#tuple-deconstruction-element-list"
-				},
-				{
-					"include": "#declaration-expression-tuple"
-				},
-				{
-					"include": "#punctuation-comma"
-				},
-				{
-					"match": "(?x) # e.g. x\n(@?[_[:alpha:]][_[:alnum:]]*)\\b\\s*\n(?=[,)])",
-					"captures": {
-						"1": {
-							"name": "variable.other.readwrite.cs"
-						}
-					}
-				}
-			]
-		},
 		"declaration-expression-local": {
 			"match": "(?x) # e.g. int x OR var x\n(?:\n  \\b(var)\\b|\n  (?<type_name>\n    (?:\n      (?:\n        (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*\\:\\:\\s*)? # alias-qualification\n        (?<name_and_type_args> # identifier + type arguments (if any)\n          \\g<identifier>\\s*\n          (?<type_args>\\s*<(?:[^<>]|\\g<type_args>)+>\\s*)?\n        )\n        (?:\\s*\\.\\s*\\g<name_and_type_args>)* | # Are there any more names being dotted into?\n        (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\n      )\n      (?:\\s*\\?\\s*)? # nullable suffix?\n      (?:\\s* # array suffix?\n        \\[\n          (?:\\s*,\\s*)* # commata for multi-dimensional arrays\n        \\]\n        \\s*\n        (?:\\?)? # arrays can be nullable reference types\n        \\s*\n      )*\n    )\n  )\n)\\s+\n(\\g<identifier>)\\b\\s*\n(?=[,)\\]])",
 			"captures": {
@@ -3958,48 +3829,6 @@
 				}
 			}
 		},
-		"tuple-literal": {
-			"begin": "(\\()(?=.*[:,])",
-			"beginCaptures": {
-				"1": {
-					"name": "punctuation.parenthesis.open.cs"
-				}
-			},
-			"end": "\\)",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.close.cs"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#comment"
-				},
-				{
-					"include": "#tuple-literal-element"
-				},
-				{
-					"include": "#expression"
-				},
-				{
-					"include": "#punctuation-comma"
-				}
-			]
-		},
-		"tuple-literal-element": {
-			"begin": "(?x)\n(@?[_[:alpha:]][_[:alnum:]]*)\\s*\n(?=:)",
-			"beginCaptures": {
-				"1": {
-					"name": "entity.name.variable.tuple-element.cs"
-				}
-			},
-			"end": "(:)",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.separator.colon.cs"
-				}
-			}
-		},
 		"assignment-expression": {
 			"begin": "(?:\\*|/|%|\\+|-|\\?\\?|\\&|\\^|<<|>>>?|\\|)?=(?!=|>)",
 			"beginCaptures": {
@@ -4106,7 +3935,7 @@
 				},
 				{
 					"name": "keyword.operator.conditional.colon.cs",
-					"match": ":"
+					"match": "\\s\\:\\s"
 				}
 			]
 		},
@@ -4154,10 +3983,6 @@
 					"include": "#punctuation-comma"
 				}
 			]
-		},
-		"identifier": {
-			"name": "variable.other.readwrite.cs",
-			"match": "@?[_[:alpha:]][_[:alnum:]]*"
 		},
 		"cast-expression": {
 			"match": "(?x)\n(\\()\\s*\n(?<type_name>\n  (?:\n    (?:\n      (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*\\:\\:\\s*)? # alias-qualification\n      (?<name_and_type_args> # identifier + type arguments (if any)\n        \\g<identifier>\\s*\n        (?<type_args>\\s*<(?:[^<>]|\\g<type_args>)+>\\s*)?\n      )\n      (?:\\s*\\.\\s*\\g<name_and_type_args>)* | # Are there any more names being dotted into?\n      (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\n    )\n    (?:\\s*\\?\\s*)? # nullable suffix?\n    (?:\\s* # array suffix?\n      \\[\n        (?:\\s*,\\s*)* # commata for multi-dimensional arrays\n      \\]\n      \\s*\n      (?:\\?)? # arrays can be nullable reference types\n      \\s*\n    )*\n  )\n)\\s*\n(\\))(?=\\s*-*!*@?[_[:alnum:]\\(])",
@@ -4492,9 +4317,6 @@
 			},
 			"patterns": [
 				{
-					"include": "#named-argument"
-				},
-				{
 					"include": "#argument"
 				},
 				{
@@ -4517,30 +4339,10 @@
 			},
 			"patterns": [
 				{
-					"include": "#named-argument"
-				},
-				{
 					"include": "#argument"
 				},
 				{
 					"include": "#punctuation-comma"
-				}
-			]
-		},
-		"named-argument": {
-			"begin": "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(:)",
-			"beginCaptures": {
-				"1": {
-					"name": "entity.name.variable.parameter.cs"
-				},
-				"2": {
-					"name": "punctuation.separator.colon.cs"
-				}
-			},
-			"end": "(?=(,|\\)|\\]))",
-			"patterns": [
-				{
-					"include": "#argument"
 				}
 			]
 		},
@@ -4998,9 +4800,6 @@
 					"include": "#readonly-modifier"
 				},
 				{
-					"include": "#tuple-type"
-				},
-				{
 					"include": "#type-builtin"
 				},
 				{
@@ -5028,43 +4827,6 @@
 			"name": "storage.modifier.readonly.cs",
 			"match": "\\breadonly\\b"
 		},
-		"tuple-type": {
-			"begin": "\\(",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.open.cs"
-				}
-			},
-			"end": "\\)",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.parenthesis.close.cs"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#tuple-element"
-				},
-				{
-					"include": "#punctuation-comma"
-				}
-			]
-		},
-		"tuple-element": {
-			"match": "(?x)\n(?<type_name>\n  (?:\n    (?:\n      (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*\\:\\:\\s*)? # alias-qualification\n      (?<name_and_type_args> # identifier + type arguments (if any)\n        \\g<identifier>\\s*\n        (?<type_args>\\s*<(?:[^<>]|\\g<type_args>)+>\\s*)?\n      )\n      (?:\\s*\\.\\s*\\g<name_and_type_args>)* | # Are there any more names being dotted into?\n      (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))\n    )\n    (?:\\s*\\?\\s*)? # nullable suffix?\n    (?:\\s* # array suffix?\n      \\[\n        (?:\\s*,\\s*)* # commata for multi-dimensional arrays\n      \\]\n      \\s*\n      (?:\\?)? # arrays can be nullable reference types\n      \\s*\n    )*\n  )\n)\n(?:(?<tuple_name>\\g<identifier>)\\b)?",
-			"captures": {
-				"1": {
-					"patterns": [
-						{
-							"include": "#type"
-						}
-					]
-				},
-				"6": {
-					"name": "entity.name.variable.tuple-element.cs"
-				}
-			}
-		},
 		"type-builtin": {
 			"match": "\\b(bool|s?byte|u?short|n?u?int|u?long|float|double|decimal|char|string|object|void|dynamic)\\b",
 			"captures": {
@@ -5076,41 +4838,18 @@
 		"type-name": {
 			"patterns": [
 				{
-					"match": "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(\\:\\:)",
+					"match": "([_\\w][_\\w\\d]*)\\s*(\\:)\\s*([_\\w][_\\w\\d]*)",
 					"captures": {
 						"1": {
-							"name": "entity.name.type.alias.cs"
+							"name": "keyword.operator.expression.query.by.cs"
 						},
 						"2": {
-							"name": "punctuation.separator.coloncolon.cs"
-						}
-					}
-				},
-				{
-					"match": "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(\\.)",
-					"captures": {
-						"1": {
-							"name": "entity.name.type.cs"
+							"name": "punctuation.separator.colon.cs"
 						},
-						"2": {
-							"name": "punctuation.accessor.cs"
+						"3": {
+							"name": "keyword.operator.expression.query.by.cs"
 						}
 					}
-				},
-				{
-					"match": "(\\.)\\s*(@?[_[:alpha:]][_[:alnum:]]*)",
-					"captures": {
-						"1": {
-							"name": "punctuation.accessor.cs"
-						},
-						"2": {
-							"name": "entity.name.type.cs"
-						}
-					}
-				},
-				{
-					"name": "entity.name.type.cs",
-					"match": "@?[_[:alpha:]][_[:alnum:]]*"
 				}
 			]
 		},
@@ -5571,6 +5310,21 @@
 							"name": "punctuation.definition.comment.cs"
 						}
 					}
+				},
+				{
+					"name": "comment.block.cs",
+					"begin": "#",
+					"end": "#",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.cs"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#member-access-expression"
+						}
+					]
 				}
 			]
 		},

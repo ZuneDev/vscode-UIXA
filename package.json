@@ -26,7 +26,7 @@
         "id": "uix-script",
         "aliases": ["UIX Script", "uix-script"],
         "extensions": [".uix-script"],
-        "configuration": "./language-configuration.json"
+        "configuration": "./uix-script_language-configuration.json"
       }
     ],
     "grammars": [
