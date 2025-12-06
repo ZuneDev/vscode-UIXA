@@ -15,10 +15,21 @@
     "Debuggers",
     "Programming Languages"
   ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.3.3"
+  },
   "activationEvents": [
-    "onDebug",
-    "onCommand:extension.uixa.getProgramName"
+    "onDebugResolve:uix-xml"
   ],
+  "main": "./out/extension.js",
   "contributes": {
     "languages": [
       {
@@ -56,56 +67,6 @@
         "path": "./syntaxes/uix-xml.tmLanguage.json"
       }
     ],
-    "menus": {
-      "editor/title/run": [
-        {
-          "command": "extension.uixa.runEditorContents",
-          "when": "resourceLangId == uix-xml",
-          "group": "navigation@1"
-        },
-        {
-          "command": "extension.uixa.debugEditorContents",
-          "when": "resourceLangId == uix-xml",
-          "group": "navigation@2"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "extension.uixa.debugEditorContents",
-          "when": "resourceLangId == uix-xml"
-        },
-        {
-          "command": "extension.uixa.runEditorContents",
-          "when": "resourceLangId == uix-xml"
-        }
-      ],
-      "debug/variables/context": [
-        {
-          "command": "extension.uixa.toggleFormatting",
-          "when": "debugType == 'iris-uix' && debugProtocolVariableMenuContext == 'simple'"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "extension.uixa.debugEditorContents",
-        "title": "Debug File",
-        "category": "Iris UIX Debug",
-        "enablement": "!inDebugMode",
-        "icon": "$(debug-alt)"
-      },
-      {
-        "command": "extension.uixa.runEditorContents",
-        "title": "Run File",
-        "category": "Iris UIX Debug",
-        "enablement": "!inDebugMode",
-        "icon": "$(play)"
-      },
-      {
-        "command": "extension.uixa.toggleFormatting",
-        "title": "Toggle between decimal and hex formatting"
-      }
-    ],
     "breakpoints": [
       {
         "language": "uix-xml"
@@ -113,57 +74,85 @@
     ],
     "debuggers": [
       {
-        "type": "iris-uix",
-        "languages": [
-          "uix-xml"
-        ],
-        "label": "Iris UIX Debug",
-        "program": "./out/debugAdapter.js",
-        "runtime": "node",
+        "type": "uix-xml",
+        "label": "UIX XML Debug",
+        "languages": ["uix-xml"],
         "configurationAttributes": {
           "launch": {
-            "required": [
-              "program"
-            ],
+            "required": ["program"],
             "properties": {
               "program": {
                 "type": "string",
-                "description": "Absolute path to a text file.",
-                "default": "${workspaceFolder}/${command:AskForProgramName}"
+                "description": "Absolute path to the UIX XML application.",
+                "default": "${workspaceFolder}/iris_app.exe"
+              },
+              "pipeName": {
+                "type": "string",
+                "description": "Named pipe for communication with debug adapter.",
+                "default": "uix-debug-pipe"
               },
               "stopOnEntry": {
                 "type": "boolean",
                 "description": "Automatically stop after launch.",
                 "default": true
+              },
+              "args": {
+                "type": "array",
+                "description": "Command line arguments passed to the program.",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              },
+              "cwd": {
+                "type": "string",
+                "description": "Absolute path to the working directory of the program being debugged.",
+                "default": "${workspaceFolder}"
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables passed to the program.",
+                "default": {}
               }
             }
           }
         },
         "initialConfigurations": [
           {
-            "type": "iris-uix",
+            "type": "uix-xml",
             "request": "launch",
-            "name": "Ask for file name",
-            "program": "${workspaceFolder}/${command:AskForProgramName}",
+            "name": "Debug UIX XML Application",
+            "program": "${workspaceFolder}/app.uix",
+            "debugServer": "${workspaceFolder}/debugAdapter.exe",
+            "pipeName": "uix-debug-pipe",
             "stopOnEntry": true
           }
         ],
         "configurationSnippets": [
           {
-            "label": "Iris UIX Debug: Launch",
-            "description": "A new configuration for 'debugging' a user selected UIX XML file.",
+            "label": "UIX XML: Launch",
+            "description": "A new configuration for launching a UIX XML application.",
             "body": {
-              "type": "iris-uix",
+              "type": "uix-xml",
               "request": "launch",
-              "name": "Ask for file name",
-              "program": "^\"\\${workspaceFolder}/\\${command:AskForProgramName}\"",
+              "name": "Debug UIX XML Application",
+              "program": "^\"\\${workspaceFolder}/iris_app.exe\"",
+              "pipeName": "uix-debug-pipe",
               "stopOnEntry": true
             }
+          },
+          {
+            "label": "UIX XML: Attach",
+            "description": "A new configuration for attaching to a running UIX XML application.",
+            "body": {
+              "type": "uix-xml",
+              "request": "attach",
+              "name": "Attach to UIX XML Application",
+              "debugServer": "^\"\\${workspaceFolder}/debugAdapter.exe\"",
+              "pipeName": "uix-debug-pipe"
+            }
           }
-        ],
-        "variables": {
-          "AskForProgramName": "extension.uixa.getProgramName"
-        }
+        ]
       }
     ]
   }
