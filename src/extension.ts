@@ -46,6 +46,12 @@ class UIXDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptorF
             return undefined;
         }
 
+        const options: vscode.DebugAdapterExecutableOptions = {
+            cwd: config.cwd ? this.resolveVariables(config.cwd, session.workspaceFolder) : undefined,
+        }
+
+        return new vscode.DebugAdapterExecutable(resolvedExectuablePath, [], options);
+
         try {
             // Generate platform-specific pipe name
             const fullPipeName = this.getPlatformPipeName(pipeName);
@@ -63,8 +69,8 @@ class UIXDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptorF
             return new vscode.DebugAdapterNamedPipeServer(fullPipeName);
 
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            vscode.window.showErrorMessage(`Failed to start debug adapter: ${errorMessage}`);
+            // const errorMessage = error instanceof Error ? error.message : String(error);
+            // vscode.window.showErrorMessage(`Failed to start debug adapter: ${errorMessage}`);
             return undefined;
         }
     }
