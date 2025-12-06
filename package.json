@@ -15,6 +15,10 @@
     "Debuggers",
     "Programming Languages"
   ],
+  "activationEvents": [
+    "onDebug",
+    "onCommand:extension.uixa.getProgramName"
+  ],
   "contributes": {
     "languages": [
       {
@@ -56,29 +60,29 @@
       "editor/title/run": [
         {
           "command": "extension.uixa.runEditorContents",
-          "when": "resourceLangId == markdown",
+          "when": "resourceLangId == uix-xml",
           "group": "navigation@1"
         },
         {
           "command": "extension.uixa.debugEditorContents",
-          "when": "resourceLangId == markdown",
+          "when": "resourceLangId == uix-xml",
           "group": "navigation@2"
         }
       ],
       "commandPalette": [
         {
           "command": "extension.uixa.debugEditorContents",
-          "when": "resourceLangId == markdown"
+          "when": "resourceLangId == uix-xml"
         },
         {
           "command": "extension.uixa.runEditorContents",
-          "when": "resourceLangId == markdown"
+          "when": "resourceLangId == uix-xml"
         }
       ],
       "debug/variables/context": [
         {
           "command": "extension.uixa.toggleFormatting",
-          "when": "debugType == 'mock' && debugProtocolVariableMenuContext == 'simple'"
+          "when": "debugType == 'iris-uix' && debugProtocolVariableMenuContext == 'simple'"
         }
       ]
     },
@@ -86,14 +90,14 @@
       {
         "command": "extension.uixa.debugEditorContents",
         "title": "Debug File",
-        "category": "Mock Debug",
+        "category": "Iris UIX Debug",
         "enablement": "!inDebugMode",
         "icon": "$(debug-alt)"
       },
       {
         "command": "extension.uixa.runEditorContents",
         "title": "Run File",
-        "category": "Mock Debug",
+        "category": "Iris UIX Debug",
         "enablement": "!inDebugMode",
         "icon": "$(play)"
       },
@@ -109,11 +113,11 @@
     ],
     "debuggers": [
       {
-        "type": "mock",
+        "type": "iris-uix",
         "languages": [
-          "markdown"
+          "uix-xml"
         ],
-        "label": "Mock Debug",
+        "label": "Iris UIX Debug",
         "program": "./out/debugAdapter.js",
         "runtime": "node",
         "configurationAttributes": {
@@ -131,32 +135,13 @@
                 "type": "boolean",
                 "description": "Automatically stop after launch.",
                 "default": true
-              },
-              "trace": {
-                "type": "boolean",
-                "description": "Enable logging of the Debug Adapter Protocol.",
-                "default": true
-              },
-              "compileError": {
-                "type": "string",
-                "description": "Simulates a compile error in 'launch' request.",
-                "enum": [
-                  "default",
-                  "show",
-                  "hide"
-                ],
-                "enumDescriptions": [
-                  "default: show fake compile error to user",
-                  "show fake compile error to user",
-                  "do not show fake compile error to user"
-                ]
               }
             }
           }
         },
         "initialConfigurations": [
           {
-            "type": "mock",
+            "type": "iris-uix",
             "request": "launch",
             "name": "Ask for file name",
             "program": "${workspaceFolder}/${command:AskForProgramName}",
@@ -165,10 +150,10 @@
         ],
         "configurationSnippets": [
           {
-            "label": "Mock Debug: Launch",
-            "description": "A new configuration for 'debugging' a user selected markdown file.",
+            "label": "Iris UIX Debug: Launch",
+            "description": "A new configuration for 'debugging' a user selected UIX XML file.",
             "body": {
-              "type": "mock",
+              "type": "iris-uix",
               "request": "launch",
               "name": "Ask for file name",
               "program": "^\"\\${workspaceFolder}/\\${command:AskForProgramName}\"",
