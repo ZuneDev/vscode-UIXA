@@ -10,7 +10,8 @@ This is a Visual Studio Code extension that provides language support (specifica
 
 At the moment, syntax highlighting is the only supported feature.
 
-![Syntax Highlighting](images/highlighting.png)
+![Syntax Highlighting for UIX Assembly](images/highlighting-uixa.png)
+![Syntax Highlighting for UIX XML](images/highlighting-uix-xml.png)
 
 ## Installation
 Iris UIX is available from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=YoshiAsk.uixa) and [GitHub Releases](https://github.com/ZuneDev/vscode-UIXA/releases).
