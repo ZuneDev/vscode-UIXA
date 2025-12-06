@@ -75,7 +75,7 @@
     "debuggers": [
       {
         "type": "uix-xml",
-        "label": "UIX XML Debug",
+        "label": "Iris UIX Debug",
         "languages": ["uix-xml"],
         "configurationAttributes": {
           "launch": {
@@ -83,13 +83,8 @@
             "properties": {
               "program": {
                 "type": "string",
-                "description": "Absolute path to the UIX XML application.",
+                "description": "Absolute path to the Iris UIX application.",
                 "default": "${workspaceFolder}/iris_app.exe"
-              },
-              "pipeName": {
-                "type": "string",
-                "description": "Named pipe for communication with debug adapter.",
-                "default": "uix-debug-pipe"
               },
               "stopOnEntry": {
                 "type": "boolean",
@@ -121,35 +116,21 @@
           {
             "type": "uix-xml",
             "request": "launch",
-            "name": "Debug UIX XML Application",
-            "program": "${workspaceFolder}/app.uix",
-            "debugServer": "${workspaceFolder}/debugAdapter.exe",
-            "pipeName": "uix-debug-pipe",
+            "name": "Debug Iris UIX Application",
+            "program": "${workspaceFolder}/iris_app.exe",
             "stopOnEntry": true
           }
         ],
         "configurationSnippets": [
           {
-            "label": "UIX XML: Launch",
-            "description": "A new configuration for launching a UIX XML application.",
+            "label": "Iris UIX: Launch",
+            "description": "A new configuration for launching an Iris UIX application.",
             "body": {
               "type": "uix-xml",
               "request": "launch",
-              "name": "Debug UIX XML Application",
+              "name": "Debug Iris UIX Application",
               "program": "^\"\\${workspaceFolder}/iris_app.exe\"",
-              "pipeName": "uix-debug-pipe",
               "stopOnEntry": true
-            }
-          },
-          {
-            "label": "UIX XML: Attach",
-            "description": "A new configuration for attaching to a running UIX XML application.",
-            "body": {
-              "type": "uix-xml",
-              "request": "attach",
-              "name": "Attach to UIX XML Application",
-              "debugServer": "^\"\\${workspaceFolder}/debugAdapter.exe\"",
-              "pipeName": "uix-debug-pipe"
             }
           }
         ]
